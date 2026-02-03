@@ -21,7 +21,7 @@ class resource:
             self.set_available()
             print(f"Se han quitado {amount} {self.name}")
 
-    def dependable(self, other_resource, amount=1):
+    def dependant_on(self, other_resource, amount=1):
         if other_resource.name in self.dependencies:
             return f"Ya está establecida una relación entre {self.name} y {other_resource.name}"
 
@@ -30,7 +30,7 @@ class resource:
     def set_available(self):
         self.available = self.total_cuantity - self.in_use
 
-    # Estos son los metodos encargados de la persistencia de datos con Json
+    # Estos son los metodos encargados para la persistencia de datos de la clase con Json
     def to_dict(self):
         return {
             "name": self.name,
@@ -50,18 +50,10 @@ class resource:
             data["dependencies"],
         )
 
+    ####################################################################################
 
-r1 = resource("gatos", 5)
-r1.add_resource(24)
-
-r2 = resource("raton", 3)
-r3 = resource("perro")
-
-r1.dependable(r2)
-r1.dependable(r3)
-
-data = r1.to_dict()
-recurso = resource.from_dict(data)
+    def __str__(self):
+        return f"{self.name}, Cantidad ({self.total_cuantity})"
 
 
 def make_inventory(r1: resource, *ri: resource):
@@ -81,6 +73,8 @@ def make_inventory(r1: resource, *ri: resource):
     return inventory
 
 
-def list_inventory(i):
-    for item, values in i.items():
-        print(f"{item}: {values}")
+def list_inventory(inventory):
+    index = 1
+    for item, values in inventory.items():
+        print(f"{index} - {item}: {values}")
+        index += 1
