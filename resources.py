@@ -8,7 +8,6 @@ class resource:
 
     def add_resource(self, amount):
         self.total_cuantity += amount
-        self.set_available()
         print(f"Se han incorporado {amount} {self.name}")
 
     def remove_resource(self, amount):
@@ -18,25 +17,39 @@ class resource:
             )
         else:
             self.total_cuantity -= amount
-            self.set_available()
             print(f"Se han quitado {amount} {self.name}")
 
     def dependant_on(self, other_resource, amount=1):
-        if other_resource.name in self.dependencies:
+        if other_resource in self.dependencies:
             return f"Ya está establecida una relación entre {self.name} y {other_resource.name}"
 
-        self.dependencies[other_resource.name] = amount
+        self.dependencies[other_resource] = amount
 
     def set_available(self):
         self.available = self.total_cuantity - self.in_use
+
+    def __str__(self):
+        return f"{self.name}, Cantidad ({self.total_cuantity})"
+
+    def ask_amount(self):
+        amount = input("Que cantidad desea asociar: ")
+
+        if amount > self.available:
+            print(
+                f"No hay {amount} {self.name} disponibles en estas fechas\n"
+                f"Solamente se dispone de {self.available} {self.name}"
+            )
+            self.ask_amount()
+
+        return amount
 
     # Estos son los metodos encargados para la persistencia de datos de la clase con Json
     def to_dict(self):
         return {
             "name": self.name,
             "total_cuantity": self.total_cuantity,
-            "available": self.available,
-            "in_use": self.in_use,
+            # "available": self.available,
+            # "in_use": self.in_use,
             "dependencies": self.dependencies,
         }
 
@@ -52,23 +65,12 @@ class resource:
 
     ####################################################################################
 
-    def __str__(self):
-        return f"{self.name}, Cantidad ({self.total_cuantity})"
-
 
 def make_inventory(r1: resource, *ri: resource):
     inventory = {}
-    inventory[r1.name] = {
-        "Total": r1.total_cuantity,
-        "Disponibilidad": r1.available,
-        "En uso": r1.in_use,
-    }
+    inventory[r1.name] = r1
     for r in ri:
-        inventory[r.name] = {
-            "Total": r.total_cuantity,
-            "Disponibilidad": r.available,
-            "En uso": r.in_use,
-        }
+        inventory[r.name] = r
 
     return inventory
 

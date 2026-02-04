@@ -1,5 +1,5 @@
 # import streamlit
-from datetime import datetime, date, timedelta
+from datetime import datetime, date
 from resources import resource, list_inventory
 
 
@@ -51,12 +51,15 @@ class planification:
         while answer != "no":
             list_inventory(inventory)
 
-            res = input("Que recurso desea asignar al evento: ")
-            res = inventory[res]
+            option = input("Que recurso desea asignar al evento: ")
+            res = inventory[option]
 
-            amount = self.assign_resource(res, beginning)
+            amount = self.check_resource(res, beginning, end)
             if not amount:
-                pass  # Que hare al recibir False?
+                print(
+                    "No se puede establecer el evento con los recursos solicitados las fechas especificadas"
+                )
+                continue  # si el usuario deseara seguir planificando
 
             needed_resources[res] = amount
             answer = input("¿Desea asociar otro recurso al evento?:\n").lower()
@@ -68,11 +71,11 @@ class planification:
         ########################################################################
 
         ei = event(event_type, beginning, end, needed_resources, description)
-
         self.events.append(ei)
-        print("Se ha añadido el evento:")
-        print(self.events[-1])
         self.events.sort(key=lambda e: e.beginning)
+
+        print("Se ha añadido el evento:")
+        print(ei)
         print()
 
     def remove_event(self, index):
@@ -81,42 +84,71 @@ class planification:
         else:
             print("Índice no válido.")
 
-    def assign_resource(self, resour: resource, date: date):
-        # Esto es teniendo en cuenta a date como fecha inicial
-        for event in self.events:
-            if event.beginning > date:
-                break
-
-            if event.end < date:
+    def check_resource(self, resour: resource, beginning: date, end: date, amount=None):
+        last_seen_event = 0
+        for i in range(len(self.events)):
+            if self.events[i].end < beginning:
+                # No interesa el evento que se esta analizando si termina
+                # antes del inicio del evento que se desea establecer
                 continue
 
-            if event.beginning <= date <= event.end:
-                if resour in event.resources:
-                    resour.in_use += event[resour]
-        # Faltan hacer comprobaciones entre el final del evento que se está creando
-        # e intervalos de otros eventos que vengan detras
+            if self.events[i].beginning > beginning:
+                break
+
+            if self.events[i].beginning <= beginning <= self.events[i].end:
+                if resour in self.events[i].needed_resources:
+                    resour.in_use += self.events[i].needed_resources[resour]
+                    last_seen_event = i
+
+        # Codigo para chequear si el final del evento en creacion, pertenece
+        # al intervalo de un evento que empieza posteriormente
+        for i in range(start=last_seen_event + 1, stop=len(self.events)):
+            if i == len(self.events):
+                break
+            if self.events[i].beginning > end:
+                break
+            if self.events[i].beginning <= end <= self.events[i].end:
+                if resour in self.events[i].needed_resources:
+                    resour.in_use += self.events[i].needed_resources[resour]
+        ####################################################################
 
         resour.set_available()
         if resour.available == 0:
-            print("No hay disponibilidad de este recurso en estas fechas\n")
+            print(f"No hay disponibilidad de {resour.name} en estas fechas\n")
+
+            resour.in_use = 0
+            resour.set_available()
             return False
 
-        amount = ask_amount(resour)
+        if amount == None:  # Para evitar input con las dependencias
+            amount = resour.ask_amount()
+        else:
+            if amount > resour.available:
+                print(
+                    f"No hay {amount} de {resour.name} disponibles en estas fechas\n"
+                    f"Solamente se dispone de {resour.available} {resour.name}"
+                )
+
+                resour.in_use = 0
+                resour.set_available()
+                return False
+
+        for dependencie in resour.dependencies:
+            amount = resour.dependencies[dependencie]
+            check = self.check_resource(dependencie, beginning, end, amount)
+            if check == False:
+                print(
+                    f"Como los\las {resour.name} dependen de {dependencie.name},\
+                    no se puede establecer el evento con los recursos solicitados las fechas especificadas"
+                )
+
+                resour.in_use = 0
+                resour.set_available()
+                return False
+
         resour.in_use = 0
         resour.set_available()
         return amount
-
-
-def ask_amount(resour):
-    amount = input("Que cantidad desea asociar: ")
-    if amount > resour.available:
-        print(
-            f"No hay {amount} de {resour.name} disponibles en estas fechas\n"
-            f"Solamente se dispone de {resour.available} {resour.name}"
-        )
-        ask_amount(resour)
-
-    return amount
 
 
 # Relacionado con las fechas a la hora de establecer un evento
