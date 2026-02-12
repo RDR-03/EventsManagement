@@ -1,6 +1,6 @@
-from events import event
-from planification import planification
-from resources import resource, make_inventory
+from core.events import event
+from core.planification import planification
+from core.resources import resource, make_inventory
 from datetime import date, datetime
 import os, json
 
@@ -46,10 +46,11 @@ def SaveData(inventory: dict, planification: list = None):
     with open(EventsPath, "w") as e:
         json.dump(schedule_json, e, indent=2)
 
+    return True
+
 
 def LoadEvents():
     if not os.path.exists(EventsPath):
-        print("No hay un archivo del cual cargar datos")
         return False
 
     plan = planification()
@@ -65,7 +66,7 @@ def LoadEvents():
 
 def LoadResources():
     if not os.path.exists(ResourcesPath):
-        print("No hay un archivo del cual cargar datos")
+        return False
 
     Inventory = {}
 
@@ -78,5 +79,6 @@ def LoadResources():
     return Inventory
 
 
+# Para testeo
 e1 = event("boda", datetime.now(), datetime.now())
 plan = planification()

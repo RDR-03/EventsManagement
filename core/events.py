@@ -1,5 +1,5 @@
 from datetime import datetime
-from resources import resource
+from core.resources import resource
 
 
 class event:

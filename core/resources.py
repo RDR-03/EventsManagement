@@ -31,8 +31,10 @@ class resource:
     def __str__(self):
         return f"{self.name}, Cantidad ({self.total_cuantity})"
 
+    """ Pensado para consola
+
     def ask_amount(self):
-        amount = input("Que cantidad desea asociar: ")
+        amount = int(input("Que cantidad desea asociar: "))
 
         if amount > self.available:
             print(
@@ -42,6 +44,7 @@ class resource:
             self.ask_amount()
 
         return amount
+    """
 
     # Estos son los metodos encargados para la persistencia de datos de la clase con Json
     def to_dict(self):
