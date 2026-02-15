@@ -73,6 +73,8 @@ class resource:
         return cls(
             data["name"],
             data["total_cuantity"],
+            0,  # Available
+            0,  # In_use
             data["dependencies"],
             data["conflicts"],
         )

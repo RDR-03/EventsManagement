@@ -1,5 +1,5 @@
 from core.events import event
-from core.resources import resource, list_inventory
+from core.resources import resource
 from datetime import datetime
 
 
@@ -64,17 +64,24 @@ class planification:
             # Chequear que no haya conflicts
             for r in item.conflicts:
                 if r in needed_resources:
+
                     return f"No se puede emplear {item.name} cuando está empleandose en el evento\
                             {r.name}"
 
             # Chequear disponibilidad
             available = self.resource_availabilty(item, start, end)
+
+            # Ya la disponibilidad la tengo un espacio de memoria independiente de item.available
+            item.in_use = 0
+            item.set_available()
+
             if available == 0:
                 return f"No hay disponibilidad de {item.name} en estas fechas"
+
             if available < amount:
                 return f"Introdujo una cantidad que supera la cantidad disponible de {item.name}"
 
-            for dependencie, amount in item.dependencies.items:
+            for dependencie, amount in item.dependencies.items():
                 availables = self.resource_availabilty(dependencie, start, end)
                 if available == 0:
                     return f"No hay disponibilidad de {dependencie.name}en estas fechas,\
@@ -116,7 +123,7 @@ class planification:
         # Código para chequear si el final del evento en creacion, pertenece
         # al intervalo de un evento que empieza posteriormente
         for i in range(last_seen_event + 1, len(self.events)):
-            if i == len(self.events):
+            if i == len(self.events):  # No creo que llegue a ocurrir este caso
                 break
             if self.events[i].beginning > end:
                 break
@@ -125,7 +132,8 @@ class planification:
                     resour.in_use += self.events[i].needed_resources[resour]
         ####################################################################
 
-        return resour.set_available()
+        resour.set_available()
+        return resour.available
 
         """ Consola en mente
         if resour.available == 0:

@@ -4,7 +4,7 @@ import os, sys
 parent_dir = os.path.dirname(os.path.abspath("home.py"))
 sys.path.append(parent_dir)
 
-from core._init_ import LoadEvents, LoadResources, SaveData
+from core._init_ import LoadEvents, LoadResources, SaveData, Inventory
 from core.planification import planification
 
 # Cargar datos
@@ -18,8 +18,8 @@ if "initialized" not in st.session_state:
 
     inventory = LoadResources()
     if inventory == False:
-        st.write("No hay archivo desde donde cargar inventario")
-        inventory = {}
+        st.write("Cargando el inventario base")
+        inventory = Inventory
 
     st.session_state.schedule = schedule
     st.session_state.inventory = inventory
