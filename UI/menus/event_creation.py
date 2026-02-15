@@ -46,10 +46,10 @@ with st.form("select resource"):
     submitted = st.form_submit_button("Confirmar recursos")
 
 if submitted:
-    if needed_resources != {} and type(posible_event) == event:
+    if type(posible_event) == event:
         schedule.events.append(posible_event)
         st.success("Evento creado con exito")
         st.write(posible_event)
 
     else:
-        st.error("No se puede concretar la creación del evento")
+        st.error(posible_event)

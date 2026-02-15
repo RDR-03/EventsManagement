@@ -4,7 +4,7 @@ import os, sys
 parent_dir = os.path.dirname(os.path.abspath("home.py"))
 sys.path.append(parent_dir)
 
-from core.core import LoadEvents, LoadResources, SaveData
+from core._init_ import LoadEvents, LoadResources, SaveData
 from core.planification import planification
 
 # Cargar datos

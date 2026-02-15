@@ -1,6 +1,6 @@
 from core.events import event
 from core.resources import resource, list_inventory
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 class planification:
@@ -57,21 +57,31 @@ class planification:
         needed_resources: dict[resource:int],
         description=None,
     ):
+        if needed_resources == {}:
+            return "Debe asignar al evento al menos un recurso"
+
         for item, amount in needed_resources.items():
+            # Chequear que no haya conflicts
+            for r in item.conflicts:
+                if r in needed_resources:
+                    return f"No se puede emplear {item.name} cuando está empleandose en el evento\
+                            {r.name}"
+
+            # Chequear disponibilidad
             available = self.resource_availabilty(item, start, end)
             if available == 0:
-                return False
+                return f"No hay disponibilidad de {item.name} en estas fechas"
             if available < amount:
-                return False
+                return f"Introdujo una cantidad que supera la cantidad disponible de {item.name}"
 
             for dependencie, amount in item.dependencies.items:
                 availables = self.resource_availabilty(dependencie, start, end)
                 if available == 0:
-                    return False
+                    return f"No hay disponibilidad de {dependencie.name}en estas fechas,\
+                            recurso necesario para disponer de {item.name} "
                 if availables < amount:
-                    return False
-
-        # Falta la comprobacion de recursos que mantienen conflictos
+                    return f"No hay cantiddad suficiente de {dependencie.name} en estas fechas,\
+                            recurso necesario para disponer de {item.name} "
 
         # Despues de tener todo ok
         return event(event_type, start, end, needed_resources, description)
@@ -187,6 +197,7 @@ def valid_datetime(posible_datetime_str):
     return False
 
 
+""" Consola en mente
 def confirm_beginning(event_type: str):
     datetime_str = input(
         f"Fecha y hora de inicio de la {event_type} (formato: DD/MM/AAAA HH:MM): "
@@ -227,6 +238,6 @@ def confirm_end(beginning: datetime, event_type: str):
         return confirm_end(beginning, event_type)
 
     return datetime_obj
-
+"""
 
 ##############################################################
