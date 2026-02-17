@@ -56,8 +56,16 @@ def LoadEvents():
 
     with open(EventsPath, "r") as f:
         events_list = json.load(f)
-        for data in events_list:
-            plan.events.append(event.from_dict(data))
+        for event_in_dict in events_list:
+
+            # Convetir la llave de str a resource
+            needed = {}
+            for resource, amount in event_in_dict["needed_resources"].items():
+                needed[Inventory[resource]] = amount
+            event_in_dict["needed_resources"] = needed
+            #########################################################
+
+            plan.events.append(event.from_dict(event_in_dict))
 
     plan.events.sort(key=lambda e: e.beginning)
     return plan

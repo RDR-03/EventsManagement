@@ -33,9 +33,11 @@ with st.form("select resource"):
     for resource in selections:
         row_i = st.columns(2)
 
-        amount = row_i[0].number_input(f"Cantidad de {resource} a asignar", step=1)
         disponibility = row_i[1].text(
-            schedule.resource_availabilty(resource, start, end)
+            schedule.resource_availabilty(inventory[resource], start, end)
+        )
+        amount = row_i[0].number_input(
+            f"Cantidad de {resource} a asignar", min_value=1, step=1
         )
 
         needed_resources[inventory[resource]] = amount
@@ -46,11 +48,11 @@ with st.form("select resource"):
 
     submitted = st.form_submit_button("Confirmar recursos")
 
-    if submitted:
-        if type(posible_event) == event:
-            schedule.events.append(posible_event)
-            st.success("Evento creado con exito")
-            st.write(posible_event)
+if submitted:
+    if type(posible_event) == event:
+        schedule.events.append(posible_event)
+        st.success("Evento creado con exito")
+        st.write(posible_event)
 
-        else:
-            st.error(posible_event)
+    else:
+        st.error(posible_event)

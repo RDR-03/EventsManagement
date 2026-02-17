@@ -19,11 +19,14 @@ class event:
         self.description = description
 
     def to_dict(self):
+        needed = {}
+        for resource, amount in self.needed_resources.items():
+            needed[resource.name] = amount
         return {
             "type": self.type,
             "beginning": self.beginning.isoformat(),
             "end": self.end.isoformat(),
-            "needed_resources": self.needed_resources,
+            "needed_resources": needed,
             "description": self.description,
         }
 
