@@ -15,18 +15,16 @@ class resource:
         self.dependencies = dependencies
         self.conflicts = conflicts
 
-    def add_resource(self, amount):
+    def increase_amount(self, amount):
         self.total_cuantity += amount
-        print(f"Se han incorporado {amount} {self.name}")
+        return True
 
-    def remove_resource(self, amount):
+    def decrease_amount(self, amount):
         if amount > self.total_cuantity:
-            print(
-                f"La cantidad de {self.name} que se desea retirar supera la cantidad total"
-            )
+            return False
         else:
             self.total_cuantity -= amount
-            print(f"Se han quitado {amount} {self.name}")
+            return True
 
     def dependant_on(self, other_resource, amount=1):
         if other_resource in self.dependencies:

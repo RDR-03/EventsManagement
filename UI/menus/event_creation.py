@@ -1,6 +1,6 @@
 import streamlit as st
 from datetime import datetime
-from UI.home import inventory, schedule, go_to_home
+from UI.home import inventory, schedule
 from core.planification import planification
 from core.events import event
 
@@ -31,12 +31,12 @@ header[1].subheader("Disponibilidad")
 
 with st.form("select resource"):
     for resource in selections:
-        row_i = st.columns(2)
+        row = st.columns(2)
 
-        disponibility = row_i[1].text(
+        disponibility = row[1].text(
             schedule.resource_availabilty(inventory[resource], start, end)
         )
-        amount = row_i[0].number_input(
+        amount = row[0].number_input(
             f"Cantidad de {resource} a asignar", min_value=1, step=1
         )
 

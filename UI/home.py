@@ -13,7 +13,7 @@ if "initialized" not in st.session_state:
 
     schedule = LoadEvents()
     if schedule == False:
-        st.write("No hay archivo desde donde cargar planificación")
+        st.write("No hay archivo desde donde cargar una planificación")
         schedule = planification()
 
     inventory = LoadResources()
@@ -36,14 +36,14 @@ menus = ["home", "event_creation", "see_inventory", "see_schedule"]
 
 
 def go_to_menu():
-    st.title("Gestor de eventos")
-    st.header("Que desea hacer")
+    st.title("Gestor de eventos", text_alignment="center")
+    st.header("¿Qué desea hacer?")
 
     if st.button("Crear evento"):
         st.session_state.menu = menus[1]
         st.rerun()
 
-    if st.button("Ver inventario"):
+    if st.button("Gestionar inventario"):
         st.session_state.menu = menus[2]
         st.rerun()
 
@@ -67,7 +67,7 @@ menu = st.session_state.menu
 home_page = st.Page(go_to_home, title="Inicio", icon=":material/logout:")
 event_page = st.Page(
     "menus/event_creation.py",
-    title="Creación del evento",
+    title="Creación de evento",
     icon=":material/settings:",
 )
 schedule_page = st.Page("menus/see_schedule.py", title="Eventos Planificados")
