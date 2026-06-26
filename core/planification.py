@@ -84,10 +84,10 @@ class planification:
             for dependencie, amount in item.dependencies.items():
                 availables = self.resource_availabilty(dependencie, start, end)
                 if available == 0:
-                    return f"No hay disponibilidad de {dependencie.name}en estas fechas,\
+                    return f"No hay disponibilidad de {dependencie.name} en estas fechas,\
                             recurso necesario para disponer de {item.name} "
                 if availables < amount:
-                    return f"No hay cantiddad suficiente de {dependencie.name} en estas fechas,\
+                    return f"No hay cantidad suficiente de {dependencie.name} en estas fechas,\
                             recurso necesario para disponer de {item.name} "
 
         # Despues de tener todo ok

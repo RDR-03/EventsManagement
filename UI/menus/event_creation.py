@@ -1,7 +1,6 @@
 import streamlit as st
 from datetime import datetime
 from UI.home import inventory, schedule
-from core.planification import planification
 from core.events import event
 
 st.title("Establecer un evento")

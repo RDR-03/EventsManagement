@@ -75,11 +75,11 @@ inventory_page = st.Page("menus/see_inventory.py", title="Inventario")
 
 if menu == "home":
     pg = st.navigation([st.Page(go_to_menu)])
-if menu == "event_creation":
+elif menu == "event_creation":
     pg = st.navigation([event_page, home_page])
-if menu == "see_schedule":
+elif menu == "see_schedule":
     pg = st.navigation([schedule_page, home_page])
-if menu == "see_inventory":
+elif menu == "see_inventory":
     pg = st.navigation([inventory_page, home_page])
 
 pg.run()

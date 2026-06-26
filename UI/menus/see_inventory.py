@@ -22,6 +22,7 @@ if st.session_state.changed_resource:
 elif not st.session_state.changed_resource and st.session_state.message != None:
     st.error(st.session_state.message)
 
+# Representación visual del inventario
 header = st.columns(2)
 header[0].subheader("Recurso")
 header[1].subheader("Cantidad total")
@@ -32,6 +33,7 @@ for key, value in inventory.items():
 
     row[0].write(key)
     row[1].write(value.total_cuantity)
+###################################################
 
 col1, col2 = st.columns(2)
 
