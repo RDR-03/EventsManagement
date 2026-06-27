@@ -5,6 +5,24 @@ from core.events import event
 inventory = st.session_state.inventory
 schedule = st.session_state.schedule
 
+# Inicializando las variables encargadas de mostrar mensaje al usuario
+if "event_created" not in st.session_state:
+    st.session_state.event_created = None
+if "event_message" not in st.session_state:
+    st.session_state.event_message = None
+
+# Mostrado del mensaje después del rerun
+if st.session_state.event_created:
+    st.success("Evento creado con exito")
+    st.write(st.session_state.event_message)
+
+    st.session_state.event_created = None
+    st.session_state.event_message = None
+
+elif st.session_state.event_created == False:
+    st.error(st.session_state.event_message)
+
+# Diseño de la página
 st.title("Crear un evento")
 
 event_type = st.selectbox("Que tipo de evento desea crear", ["Boda", "Cena", "Reunion"])
@@ -54,8 +72,10 @@ if submitted:
 
     if isinstance(posible_event, event):
         schedule.events.append(posible_event)
-        st.success("Evento creado con exito")
-        st.write(posible_event)
-
+        st.session_state.event_created = True
+        st.session_state.event_message = posible_event
     else:
-        st.error(posible_event)
+        st.session_state.event_created = False
+        st.session_state.event_message = posible_event
+
+    st.rerun()

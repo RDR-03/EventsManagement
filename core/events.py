@@ -46,4 +46,4 @@ class event:
     def __str__(self):
         start = self.beginning.replace(second=0, microsecond=0)
         end = self.end.replace(second=0, microsecond=0)
-        return f"{self.type} fijada desde {start} hasta {end}"
+        return f"{self.type} fijada desde el {start} hasta el {end}"
