@@ -1,16 +1,16 @@
-# Informe del Proyecto "ÁGORA v1.0"
+# Informe del Proyecto ""
 
 **Sistema de Planificación de Eventos y Gestión de recursos en el sector hotelero**
 
 **Autor:** Omar Alejandro Cuellar Ash
-**Tecnología empleada:** Python 3.10+
-**Fecha de elaboración:** Junio 2026
+**Lenguaje empleado:** Python 3.13.5
+**Dependencias empleadas:** Streamlit 1.53.1
 
 ---
 
 ## 1. Introducción
 
-El presente proyecto surge con el objetivo de concebir una herramienta funcional destinada a la organización logística de eventos. La aplicación desarrollada, _ÁGORA v1.0_, permite a un usuario coordinador gestionar la creación de eventos, administrar un inventario de recursos asociados y, principalmente, **prevenir conflictos de disponibilidad horaria** entre distintos eventos que comparten recursos limitados.
+El presente proyecto surge con el objetivo de concebir una herramienta funcional destinada a la organización logística de eventos. La aplicación desarrollada, _ÁGORA_, permite a un usuario coordinador gestionar la creación de eventos, administrar un inventario de recursos asociados y, principalmente, **prevenir conflictos de disponibilidad horaria** entre distintos eventos que comparten recursos limitados.
 
 El propósito fundamental del sistema es garantizar la integridad de la programación, evitando la doble reserva **mediante un motor de verificación de solapamientos temporales**. Este informe detalla el alcance del programa, las decisiones de diseño, las lecciones extraídas durante el desarrollo, ejemplos de uso y las dificultades técnicas resueltas a lo largo del proceso.
 
@@ -28,7 +28,7 @@ Para dotar de contexto al sistema, se acotó el dominio de aplicación al **sect
 
 - **Oportunidad de negocio:** La visualización clara de los intervalos libres permite al coordinador maximizar la ocupación de los espacios, reduciendo los tiempos muertos y optimizar los ingresos.
 
-Por consiguiente, el sistema _ÁGORA v1.0_ modela cada **Evento** como un compromiso contractual con un cliente (con atributos de fecha, hora y duración), y cada **Recurso** como un activo tangible del hotel. El software impide asignaciones que vulneren la disponibilidad de los recursos.
+Por consiguiente, el sistema _ÁGORA_ modela cada **Evento** como un compromiso contractual con un cliente (con atributos de fecha, hora y duración), y cada **Recurso** como un activo tangible del hotel. El software impide asignaciones que vulneren la disponibilidad de los recursos.
 
 ---
 
@@ -62,7 +62,7 @@ Se implementó la persistencia de datos mediante el formato JSON, en lugar de un
 
 ### 3.5. Interfaz de Usuario: Aplicación web interactiva con Streamlit
 
-Se decidió implementar una interfaz web interactiva empleando el framework Streamlit, en lugar de la consola. Esta elección obedece a tres razones principales. En primer lugar, el perfil del usuario final (coordinadores de eventos y personal hotelero) que no está familiarizado con entornos de terminal. En segundo lugar, Streamlit ofrece widgets nativos de entrada de fechas, horas y números que incorporan validaciones automáticas, eliminando la necesidad de escribir bucles de limpieza y previniendo errores de tecleo. En tercer lugar, Streamlit permite iterar y depurar visualmente el código en tiempo real, acelerando el tiempo de desarrollo. Además, el uso de Streamlit fue recomendado por los profesores de la asignatura por su sencillez y rápida curva de aprendizaje. La aplicación puede desplegarse en un servidor local y es accesible desde múltiples dispositivos, lo que facilita la colaboración entre distintos departamentos del hotel.
+Se decidió implementar una interfaz web interactiva empleando el framework Streamlit, en lugar de la consola. Esta elección obedece a tres razones principales. En primer lugar, el perfil del usuario final (coordinadores de eventos y personal hotelero) que no está familiarizado con entornos de terminal. En segundo lugar, Streamlit ofrece widgets nativos de entrada de fechas, horas y números que incorporan validaciones automáticas, eliminando la necesidad de escribir bucles de limpieza y previniendo errores de tecleo. En tercer lugar, Streamlit permite iterar y depurar visualmente el código en tiempo real, acelerando el tiempo de desarrollo. Además, el uso de Streamlit fue recomendado por los profesores de la asignatura por su relativa sencillez y rápida curva de aprendizaje. La aplicación puede desplegarse en un servidor local y es accesible desde múltiples dispositivos, lo que facilita la colaboración entre distintos departamentos del hotel.
 
 ---
 
@@ -84,9 +84,9 @@ Se pueden resumir un conjunto de lecciones aprendidas durante el proceso:
 
 ---
 
-## 5. Guía de uso de ÁGORA v1.0 (Casos de Ejemplo)
+## 5. Guía de uso de ÁGORA (Casos de Ejemplo)
 
-**El sistema se ejecuta como una aplicación web. Para iniciarla, el usuario debe situarse en el directorio del proyecto y ejecutar en la terminal el comando `streamlit run app.py`. Automáticamente se abrirá una pestaña en el navegador predeterminado con la interfaz de ÁGORA.** A continuación, se ilustra un flujo de trabajo típico en un contexto hotelero.
+**El sistema se ejecuta como una aplicación web. Para iniciarla, el usuario debe situarse en el directorio del proyecto y ejecutar en la terminal el comando `streamlit run main.py`. Automáticamente se abrirá una pestaña en el navegador predeterminado con la interfaz de ÁGORA.** A continuación, se ilustra un flujo de trabajo típico en un contexto hotelero.
 
 ### 5.1. Registro de recursos físicos
 
@@ -103,14 +103,13 @@ El coordinador comienza por dar de alta los activos disponibles en el establecim
 A continuación, se crea un evento. La interfaz presenta un formulario con:
 
 - **Nombre del evento:** _Boda de Juan y Josefa_
-- **Fecha y hora de inicio:** mediante un selector de fecha y otro de hora (widgets de Streamlit), el usuario elige, por ejemplo, _2026-07-20_ y _18:00_.
-- **Duración en horas:** se introduce _5.0_.
+- **Fechas y horas de inicio y fin del evento:** mediante un selector de fecha y otro de hora (widgets de Streamlit), el usuario elige, por ejemplo, _2026-07-20_ y _18:00_.
 
-**Al pulsar Crear Evento, la aplicación añade el evento a la lista y lo muestra en la sección "Eventos programados", con su identificador interno (p. ej., ID 101).**
+**Al pulsar Crear Evento, la aplicación añade el evento a la lista y lo muestra en la sección "Eventos planificados", con su identificador interno (p. ej., ID 101).**
 
 ### 5.3. Asignación de recursos y validación de conflictos
 
-En la misma pantalla, el coordinador selecciona un evento y un recurso, y hace clic en Asignar. El sistema verifica automáticamente la disponibilidad del recurso en esa franja horaria. Si está libre, la asignación se completa y se actualiza la vista. En caso contrario, se muestra un mensaje de error, como el siguiente:
+En el mismo menú, el coordinador selecciona un evento y los recursos con la cantidad correspondiente que desea incorporar al evento. El programa verifica automáticamente la disponibilidad del recurso en esa franja horaria. Si se dispone de la cantidad requerida, la asignación se completa y se actualiza la vista. En caso contrario, se muestra un mensaje de error, como el siguiente:
 
 > "El recurso 'Proyector 1' ya está ocupado desde las 18:00 hasta las 23:00 (Boda 1). No se puede asignar."
 
@@ -126,4 +125,4 @@ Durante la programación se identificaron varias dificultades técnicas. La mayo
 
 ### 6.1. Verificación de solapamiento de intervalos
 
-La primera aproximación para comprobar la disponibilidad consistía en verificar únicamente si la fecha de inicio del nuevo evento se encontraba dentro del rango del evento existente. Sin embargo, esta lógica fallaba cuando el nuevo evento contenía completamente al evento existente (inicio anterior y fin posterior). Para solucionarlo se implementó una función **generalista** de intersección de intervalos:
+La primera aproximación para comprobar la disponibilidad consistía en verificar únicamente si la fecha de inicio del nuevo evento se encontraba dentro del rango del evento existente. Sin embargo, esta lógica fallaba cuando el nuevo evento contenía completamente al evento existente (inicio anterior y fin posterior). Para solucionarlo se implementó una función de intersección de intervalos.
