@@ -21,14 +21,16 @@ if "conflictive_future_events" not in st.session_state:
 st.title("Gestionar Inventario")
 
 # Mensajes al usuario
-if st.session_state.changed_resource:
+if st.session_state.conflictive_future_events != None:
+    st.warning(st.session_state.conflictive_future_events)
+    st.session_state.conflictive_future_events = None
+
+elif st.session_state.changed_resource:
     st.success(st.session_state.message)
 
 elif not st.session_state.changed_resource and st.session_state.message != None:
     st.error(st.session_state.message)
 
-if st.session_state.conflictive_future_events:
-    st.warning(st.session_state.conflictive_future_events)
 
 # Representación visual del inventario
 header = st.columns(2)
@@ -75,29 +77,35 @@ if st.session_state.decrease_form:
 
     if submitted:
         resource_selected = inventory[selection]
-        st.session_state.changed_resource = resource_selected.decrease_amount(amount)
+        conflictive_events = []
+
+        for ev in schedule.events:
+            if resource_selected in ev.needed_resources:
+                if (
+                    resource_selected.total_cuantity - amount
+                    < ev.needed_resources[resource_selected]
+                ):
+                    date = ev.beginning.strftime("%d/%m/%Y a las %H:%M")
+                    conflictive_events.append(
+                        f"**{ev.type}** (Programada para el {date})"
+                    )
+
+        if conflictive_events:
+            visual_list = "\n".join(conflictive_events)
+            st.session_state.conflictive_future_events = (
+                f"No dispondrá de la cantidad necesaria si descuenta del inventario "
+                f"{amount} {resource_selected.name}, "
+                f"para la realización de los siguientes eventos activos:\n\n{visual_list}\n\n"
+                f"Por favor, revise la agenda o reabastezca el recurso para evitar problemas de disponibilidad."
+            )
+            st.session_state.changed_resource = False
+            st.rerun()
+        else:
+            st.session_state.changed_resource = resource_selected.decrease_amount(
+                amount
+            )
 
         if st.session_state.changed_resource:
-            conflictive_events = []
-
-            for ev in schedule.events:
-                if resource_selected in ev.needed_resources:
-                    if (
-                        resource_selected.total_cuantity
-                        < ev.needed_resources[resource_selected]
-                    ):
-                        nice_date = ev.beginning.strftime("%d/%m/%Y a las %H:%M")
-                        conflictive_events.append(
-                            f"**{ev.type}** (Programada para el {nice_date})"
-                        )
-
-            if conflictive_events:
-                visual_list = "\n".join(conflictive_events)
-                st.session_state.conflictive_future_events = st.warning(
-                    f"El recurso **'{selection}'** no dispondrá de la cantidad necesaria"
-                    f"para la realización de los siguientes eventos activos:\n\n{visual_list}\n\n"
-                    f"Por favor, revise la agenda o reabastezca el recurso para evitar problemas de disponibilidad."
-                )
             st.session_state.message = f"Se han quitado {amount} {selection}"
 
         else:

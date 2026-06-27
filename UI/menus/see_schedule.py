@@ -28,6 +28,10 @@ for i, event in enumerate(schedule.events):
     data["Descipción"] = event.description
     data["Inicio"] = f"{event.beginning.date()} - {event.beginning.time()}"
     data["Final"] = f"{event.end.date()} - {event.end.time()}"
+    data["Recursos asignados"] = ""
+
+    for resource, amount in event.needed_resources.items():
+        data["Recursos asignados"] = f"{resource.name}: {amount}\n"
 
     data_estructure.append(data)
     events_options.append(f"{i} - {event.type} ({event.beginning.date()})")

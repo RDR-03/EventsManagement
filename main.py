@@ -33,9 +33,7 @@ def home_page():
     )
 
     st.write("---")
-    st.write(
-        "💡 **Consejo:** Recuerde guardar sus cambios antes de cerrar la aplicación."
-    )
+    st.write("Recuerde guardar sus cambios antes de cerrar la aplicación.")
     if st.button("💾 Guardar todos los datos actuales", type="primary"):
         SaveData(st.session_state.inventory, st.session_state.schedule)
         st.success("¡Los datos se han guardado correctamente en el sistema!")
