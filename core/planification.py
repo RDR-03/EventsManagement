@@ -178,8 +178,11 @@ class planification:
         return amount
         """
 
+    # ***************************************************************************
     def find_space(event):
         pass
+
+    # ***************************************************************************
 
 
 # Relacionado con las fechas a la hora de establecer un evento

@@ -1,9 +1,11 @@
 import streamlit as st
 from datetime import datetime
-from UI.home import inventory, schedule
 from core.events import event
 
-st.title("Establecer un evento")
+inventory = st.session_state.inventory
+schedule = st.session_state.schedule
+
+st.title("Crear un evento")
 
 event_type = st.selectbox("Que tipo de evento desea crear", ["Boda", "Cena", "Reunion"])
 start = st.datetime_input(f"Fecha de inicio de la {event_type}")
@@ -36,19 +38,21 @@ with st.form("select resource"):
             schedule.resource_availabilty(inventory[resource], start, end)
         )
         amount = row[0].number_input(
-            f"Cantidad de {resource} a asignar", min_value=1, step=1
+            f"Cantidad de {resource} a asignar",
+            min_value=1,
+            step=1,
+            key=f"amt_{resource}",
         )
-
         needed_resources[inventory[resource]] = amount
-
-    posible_event = schedule.valid_event(
-        event_type, start, end, needed_resources, description
-    )
 
     submitted = st.form_submit_button("Confirmar recursos")
 
 if submitted:
-    if type(posible_event) == event:
+    posible_event = schedule.valid_event(
+        event_type, start, end, needed_resources, description
+    )
+
+    if isinstance(posible_event, event):
         schedule.events.append(posible_event)
         st.success("Evento creado con exito")
         st.write(posible_event)
