@@ -1,4 +1,4 @@
-# Informe del Proyecto ""
+# Informe del Proyecto
 
 **Sistema de Planificación de Eventos y Gestión de recursos en el sector hotelero**
 
