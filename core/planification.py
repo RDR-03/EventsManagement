@@ -1,6 +1,6 @@
 from core.events import event
 from core.resources import resource
-from datetime import datetime
+from datetime import date, datetime
 
 
 class planification:
@@ -64,7 +64,6 @@ class planification:
             # Chequear que no haya conflicts
             for r in item.conflicts:
                 if r in needed_resources:
-
                     return f"No se puede emplear {item.name} cuando está empleandose en el evento\
                             {r.name}"
 
@@ -82,11 +81,12 @@ class planification:
                 return f"Introdujo una cantidad que supera la cantidad disponible de {item.name}"
 
             for dependencie, amount in item.dependencies.items():
-                availables = self.resource_availabilty(dependencie, start, end)
-                if available == 0:
+                available2 = self.resource_availabilty(dependencie, start, end)
+
+                if available2 == 0:
                     return f"No hay disponibilidad de {dependencie.name} en estas fechas,\
                             recurso necesario para disponer de {item.name} "
-                if availables < amount:
+                if available2 < amount:
                     return f"No hay cantidad suficiente de {dependencie.name} en estas fechas,\
                             recurso necesario para disponer de {item.name} "
 
@@ -179,8 +179,15 @@ class planification:
         """
 
     # ***************************************************************************
-    def find_space(event):
-        pass
+    def find_space(self, event):
+        sugested_beggining = date.today()
+        sugested_end = date.today()
+
+        # Encontrar un dia en el cual empezar el evento
+        while True:
+            pass
+
+        return (sugested_beggining, sugested_end)
 
     # ***************************************************************************
 

@@ -11,21 +11,17 @@ if "event_created" not in st.session_state:
 if "event_message" not in st.session_state:
     st.session_state.event_message = None
 
-# Mostrado del mensaje después del rerun
-if st.session_state.event_created:
-    st.success("Evento creado con exito")
-    st.write(st.session_state.event_message)
+# Mostrado de error después del rerun
+if st.session_state.event_created == False:
+    st.error(st.session_state.event_message)
 
     st.session_state.event_created = None
     st.session_state.event_message = None
 
-elif st.session_state.event_created == False:
-    st.error(st.session_state.event_message)
-
 # Diseño de la página
 st.title("Crear un evento")
 
-event_type = st.selectbox("Que tipo de evento desea crear", ["Boda", "Cena", "Reunion"])
+event_type = st.selectbox("Que tipo de evento desea crear", ["Boda", "Cena", "Reunión"])
 start = st.datetime_input(f"Fecha de inicio de la {event_type}")
 
 if start < datetime.now().replace(minute=0, second=0, microsecond=0):
@@ -40,9 +36,7 @@ description = st.text_area("A continuación puede hacer una descripción del eve
 
 selections = st.multiselect("Seleccione los recursos a asignar", inventory)
 
-if "needed_resources" not in st.session_state:
-    st.session_state.needed_resources = {}
-needed_resources = st.session_state.needed_resources
+needed_resources = {}
 
 header = st.columns(2)
 header[0].subheader("Recurso")
@@ -53,7 +47,8 @@ with st.form("select resource"):
         row = st.columns(2)
 
         disponibility = row[1].text(
-            schedule.resource_availabilty(inventory[resource], start, end)
+            schedule.resource_availabilty(inventory[resource], start, end),
+            text_alignment="center",
         )
         amount = row[0].number_input(
             f"Cantidad de {resource} a asignar",
@@ -71,11 +66,22 @@ if submitted:
     )
 
     if isinstance(posible_event, event):
-        schedule.events.append(posible_event)
+        i = 0
+        while i < len(schedule.events):
+            if posible_event.beginning < schedule.events[i].beginning:
+                schedule.events.insert(i, posible_event)
+                break
+            else:
+                i += 1
+
+        if i == len(schedule.events):
+            schedule.events.append(posible_event)
+
         st.session_state.event_created = True
         st.session_state.event_message = posible_event
     else:
         st.session_state.event_created = False
         st.session_state.event_message = posible_event
+        st.rerun()
 
-    st.rerun()
+    st.switch_page("UI/menus/see_schedule.py")

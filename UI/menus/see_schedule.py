@@ -19,6 +19,14 @@ if st.session_state.confirmation and st.session_state.event_to_delete_id != None
     st.session_state.event_to_delete_id = None
     st.rerun()
 
+# Mostrado del mensaje de evento creado
+if st.session_state.event_created:
+    st.success("Evento creado con éxito")
+    st.write(st.session_state.event_message)
+
+    st.session_state.event_created = None
+    st.session_state.event_message = None
+
 data_estructure = []
 events_options = []
 
@@ -31,7 +39,7 @@ for i, event in enumerate(schedule.events):
     data["Recursos asignados"] = ""
 
     for resource, amount in event.needed_resources.items():
-        data["Recursos asignados"] = f"{resource.name}: {amount}\n"
+        data["Recursos asignados"] += f"{resource.name}: {amount},\n"
 
     data_estructure.append(data)
     events_options.append(f"{i} - {event.type} ({event.beginning.date()})")
@@ -42,7 +50,7 @@ st.dataframe(df)
 
 @st.dialog("Desea la eliminación de este evento")
 def Ask_confirmation():
-    if st.button("Sí"):
+    if st.button("Sí, eliminar"):
         st.session_state.confirmation = True
         st.rerun()
 

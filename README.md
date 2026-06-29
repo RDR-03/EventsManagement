@@ -40,11 +40,11 @@ El desarrollo se estructuró siguiendo con especial énfasis en la claridad, esc
 
 Se optó por el paradigma orientado a objetos para representar las entidades del dominio.
 
-- **Clase `Recurso`:** Encapsula los atributos identificativos de un activo hotelero (`id`, `nombre`, `tipo`).
-- **Clase `Evento`:** Contiene los atributos propios de una reserva (`id`, `nombre`, `inicio` como objeto `datetime`, `duracion` en horas flotantes) y una colección de referencias (lista de IDs) a los recursos asignados.
-- **Clase `Planificador`:** Actúa como el núcleo operativo del sistema. Gestiona los diccionarios maestros (`self.eventos` y `self.recursos`) y alberga los métodos de negocio para la creación, eliminación, asignación y verificación.
+- **Clase `Resource`:** Encapsula los atributos identificativos de un activo hotelero (`id`, `nombre`, `tipo`).
+- **Clase `Event`:** Contiene los atributos propios de una reserva (`id`, `nombre`, `inicio` como objeto `datetime`, `duracion` en horas flotantes) y una colección de referencias (lista de IDs) a los recursos asignados.
+- **Clase `Planification`:** Actúa como el núcleo operativo del sistema. Gestiona los diccionarios maestros (`self.eventos` y `self.recursos`) y alberga los métodos de negocio para la creación, eliminación, asignación y verificación.
 
-La justificación se basa en el principio de responsabilidad única; cualquier modificación futura en la estructura de un evento, por ejemplo, la adición del campo "presupuesto", se ajusta a la clase `Evento`, sin afectar a la lógica de asignación de recursos.
+La justificación se basa en el principio de responsabilidad única; cualquier modificación futura en la estructura de un evento, por ejemplo, la adición del campo "presupuesto", se ajusta a la clase `Event`, sin afectar a la lógica de asignación de recursos.
 
 ### 3.2. Estructuras de Datos: diccionarios vs. listas
 
@@ -58,7 +58,7 @@ Inicialmente se pensó en el uso de cadenas de texto para representar fechas; no
 
 ### 3.4. Mecanismo de persistencia: serialización JSON personalizada
 
-Se implementó la persistencia de datos mediante el formato JSON, en lugar de un sistema de gestión de bases de datos relacional, para simplificar la arquitectura del primer prototipo. El formato JSON nativo no serializa objetos `datetime`. Para resolver esta limitación, se desarrolló **un encoder y decoder personalizados**. Los objetos `datetime` se convierten a cadenas ISO-8601 durante el volcado y se reconstruyen como objetos temporales al cargar el archivo `data.json`. Este enfoque asegura que el coordinador pueda interrumpir y reanudar la sesión sin pérdida de información.
+Se implementó la persistencia de datos mediante el formato JSON, en lugar de un sistema de gestión de bases de datos relacional, para simplificar la arquitectura del primer prototipo. El formato JSON nativo no serializa objetos `datetime`. Para resolver esta limitación, se desarrolló **un encoder y decoder personalizados**. Los objetos `datetime` se convierten a cadenas ISO-8601 durante el volcado y se reconstruyen como objetos temporales al cargar el archivo `Events.json`. Este enfoque asegura que el coordinador pueda interrumpir y reanudar la sesión sin pérdida de información.
 
 ### 3.5. Interfaz de Usuario: Aplicación web interactiva con Streamlit
 
@@ -88,13 +88,13 @@ Se pueden resumir un conjunto de lecciones aprendidas durante el proceso:
 
 **El sistema se ejecuta como una aplicación web. Para iniciarla, el usuario debe situarse en el directorio del proyecto y ejecutar en la terminal el comando `streamlit run main.py`. Automáticamente se abrirá una pestaña en el navegador predeterminado con la interfaz de ÁGORA.** A continuación, se ilustra un flujo de trabajo típico en un contexto hotelero.
 
-### 5.1. Registro de recursos físicos
+### 5.1. Gestión de recursos físicos presentes en el inventario
 
-El coordinador comienza por dar de alta los activos disponibles en el establecimiento mediante los campos de texto y el botón "Añadir Recurso" que aparecen en el panel lateral o en la página principal.
+En la sección "Gestionar Inventario" del panel lateral se halla una visualización de cada recurso junto con su respectiva cantidad total, además de presentar los botones "Disminuir cantidad" y "Aumentar cantidad" para modificar tales cantidades.
 
-- Introduce el nombre: **Salón Imperial**
-- Selecciona el tipo: **Sala** (desde un desplegable)
-- Pulsa el botón **Crear recurso**. El sistema muestra un mensaje de confirmación y el recurso aparece en la tabla de recursos activos.
+- Al presionar **Disminuir cantidad**, se le presenta al usuario un cajón de selección de activos con la cantidad que pretende restar del inventario. Tras realizarse clic en el botón "Confirmar", el sistema comprueba que la operación que se está llevando a cabo no producirá conflictos en la planificación de eventos En caso de haber conflicros, no se descontará ninguna cantidad del recurso en cuestión del inventario y se informará de los eventos que se vean afectados, recomendando que se modificada la planificación
+
+- Al presionar **Aumentar cantidad**, se muestra un cajón de selección con gran parecido al descrito anteriormente, excepto que no habrá problemáticas que el programa necesite considerar.
 
 **Se pueden añadir otros recursos como Proyectores (tipo Audiovisual) o Equipo de sonido.**
 
@@ -102,7 +102,8 @@ El coordinador comienza por dar de alta los activos disponibles en el establecim
 
 A continuación, se crea un evento. La interfaz presenta un formulario con:
 
-- **Nombre del evento:** _Boda de Juan y Josefa_
+- **Tipo de evento:** _Boda_
+- **Descripción del evento:** _Boda de Juan y Josefa_
 - **Fechas y horas de inicio y fin del evento:** mediante un selector de fecha y otro de hora (widgets de Streamlit), el usuario elige, por ejemplo, _2026-07-20_ y _18:00_.
 
 **Al pulsar Crear Evento, la aplicación añade el evento a la lista y lo muestra en la sección "Eventos planificados", con su identificador interno (p. ej., ID 101).**
