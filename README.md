@@ -1,4 +1,4 @@
-│# Informe del Proyecto
+# Informe del Proyecto
 
 **Sistema de Planificación de Eventos y Gestión de recursos en el sector hotelero**
 
@@ -155,6 +155,7 @@ Proyecto/
 │ ├── Events.json
 │ └── Inventory.json
 └── main.py
+```
 
 ### 3.2. Paradigma de programación orientada a objetos (POO)
 
@@ -303,4 +304,3 @@ Para evitar este problema se combinaron los controles `st.date_input` y `st.time
 ## 7. Conclusiones
 
 El proyecto ha proporcionado un sistema funcional para la planificación de eventos en el sector hotelero. El desarrollo ha permitido consolidar conocimientos en programación orientada a objetos, manejo de estructuras de datos, gestión temporal y persistencia de información. La capacidad del sistema para detectar y prevenir conflictos de agenda de manera eficiente constituye su valor más significativo.
-```
