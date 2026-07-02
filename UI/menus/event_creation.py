@@ -12,10 +12,13 @@ if "event_message" not in st.session_state:
     st.session_state.event_message = None
 
 # Recordatorio de fechas sugeridas
-if "default_start" not in st.session_state:
-    st.session_state.default_start = datetime.now()
-if "default_end" not in st.session_state:
-    st.session_state.default_end = datetime.now() + timedelta(hours=2)
+if "suggested_start" not in st.session_state:
+    st.session_state.suggested_start = datetime.now()
+if "suggested_end" not in st.session_state:
+    st.session_state.suggested_end = datetime.now() + timedelta(hours=1)
+# Mensaje de fecha sugerida
+if "suggested_message" not in st.session_state:
+    st.session_state.suggested_message = None
 
 # Mostrado de error después del rerun
 if st.session_state.event_created == False:
@@ -66,29 +69,34 @@ if selections:
             if posible_space is not None:
                 sug_start, sug_end = posible_space
 
-                st.session_state.default_start = sug_start
-                st.session_state.default_end = sug_end
-                st.success(
-                    f"✅ ¡Hueco encontrado! Sugerido: {sug_start.strftime('%d/%m/%Y %H:%M')} hasta {sug_end.strftime('%d/%m/%Y %H:%M')}"
-                )
-                st.info(
-                    "Las fechas se han cargado automáticamente abajo. Revisa las cantidades y confirma."
-                )
+                st.session_state.suggested_start = sug_start
+                st.session_state.suggested_end = sug_end
+                st.session_state.suggested_message = f"✅ Se encontró el siguiente espacio:\
+                      {sug_start.strftime('%d/%m/%Y %H:%M')} hasta {sug_end.strftime('%d/%m/%Y %H:%M')}"
+
                 st.rerun()
             else:
                 st.error(
-                    "❌ No hay disponibilidad conjunta para estos recursos en los próximos 45 días."
+                    "No hay disponibilidad conjunta para estos recursos en los próximos 45 días."
                 )
     ##################################################################################
 
     st.write("---")
 
+    if st.session_state.suggested_message is not None:
+        st.success(st.session_state.suggested_message)
+
     # Elección personal de fechas
-    start = st.datetime_input(f"Fecha de inicio de la {event_type}")
+    start = st.datetime_input(
+        f"Fecha de inicio de la {event_type}", value=st.session_state.suggested_start
+    )
     if start < datetime.now().replace(minute=0, second=0, microsecond=0):
         st.error("El evento debe iniciar hoy o en un día posterior")
 
-    end = st.datetime_input(f"Fecha de finalización de la {event_type}")
+    end = st.datetime_input(
+        f"Fecha de finalización de la {event_type}",
+        value=st.session_state.suggested_end,
+    )
     if end < start:
         st.error("El fin del evento debe ser igual o posterior a la fecha de inicio")
 
@@ -98,7 +106,7 @@ if selections:
         availables = schedule.resource_availability(resour, start, end)
         if availables < amount:
             st.error(
-                f"Ha solicitado {amount} {resour.name}, pero en estas fechas solo hay disponibles {availables}"
+                f"Ha solicitado {amount} {resour.name}, pero en estas fechas hay disponibles: {availables}"
             )
             valid_dates = False
         else:

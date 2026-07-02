@@ -4,7 +4,7 @@ from core.resources import resource, make_inventory
 import os, json
 
 
-DataShow = resource("Datashow", 2)
+DataShow = resource("Datashows", 2)
 Pantalla_tela = resource("Pantallas tela")
 Salon = resource("Salones", 5)
 Tv = resource("Tv's", 8)

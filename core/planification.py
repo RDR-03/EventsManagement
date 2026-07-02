@@ -68,7 +68,7 @@ class planification:
             # Chequear que no haya conflicts
             for r in item.conflicts:
                 if r in needed_resources:
-                    return f"No se puede emplear {item.name} cuando está empleandose en el evento\
+                    return f"No se pueden emplear {item.name} cuando están utilizándose en el evento\
                             {r.name}"
 
             # Chequear disponibilidad
@@ -130,7 +130,8 @@ class planification:
                     resour.in_use += self.events[i].needed_resources[resour]
         ####################################################################
 
-        available = resour.set_available()
+        resour.set_available()
+        available = resour.available
 
         resour.in_use = 0
         resour.set_available()
@@ -186,7 +187,7 @@ class planification:
         final_search_date = suggested_beginning + timedelta(days=45)
 
         while suggested_beginning <= final_search_date:
-            suggested_end = suggested_beginning + timedelta(event_duration)
+            suggested_end = suggested_beginning + timedelta(hours=event_duration)
             all_resources_available = True
 
             # Encontrar el posible día de inicio
