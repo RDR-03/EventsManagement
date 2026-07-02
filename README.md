@@ -205,7 +205,7 @@ Se pueden resumir un conjunto de lecciones aprendidas durante el proceso:
 
 ---
 
-## 5. Guía de uso de ÁGORA (Casos de Ejemplo)
+## 5. Guía de uso (Casos de Ejemplo)
 
 **El sistema se ejecuta como una aplicación web. Para iniciarla, el usuario debe situarse en el directorio del proyecto y ejecutar en la terminal el comando `streamlit run main.py`. Automáticamente se abrirá una pestaña en el navegador predeterminado con la interfaz de ÁGORA.** A continuación, se ilustra un flujo de trabajo típico en un contexto hotelero.
 
