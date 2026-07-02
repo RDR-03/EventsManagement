@@ -10,6 +10,9 @@ if "confirmation" not in st.session_state:
 if "event_to_delete_id" not in st.session_state:
     st.session_state.event_to_delete_id = None
 
+if "event_created" not in st.session_state:
+    st.session_state.event_created = None
+
 if st.session_state.confirmation and st.session_state.event_to_delete_id != None:
     id = st.session_state.event_to_delete_id
     eliminated_event = schedule.events.pop(id)

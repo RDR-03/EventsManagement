@@ -1,6 +1,6 @@
 from core.events import event
 from core.resources import resource
-from datetime import date, datetime
+from datetime import timedelta, datetime
 
 
 class planification:
@@ -60,19 +60,19 @@ class planification:
         if needed_resources == {}:
             return "Debe asignar al evento al menos un recurso"
 
+        # Definir que todo evento requiere de un salon al menos
+        # if salon not in needed_resources:
+        #     needed_resources[salon] = 1
+
         for item, amount in needed_resources.items():
             # Chequear que no haya conflicts
             for r in item.conflicts:
                 if r in needed_resources:
-                    return f"No se puede emplear {item.name} cuando está empleandose en el evento\
+                    return f"No se pueden emplear {item.name} cuando están utilizándose en el evento\
                             {r.name}"
 
             # Chequear disponibilidad
-            available = self.resource_availabilty(item, start, end)
-
-            # Ya la disponibilidad la tengo un espacio de memoria independiente de item.available
-            item.in_use = 0
-            item.set_available()
+            available = self.resource_availability(item, start, end)
 
             if available == 0:
                 return f"No hay disponibilidad de {item.name} en estas fechas"
@@ -81,7 +81,7 @@ class planification:
                 return f"Introdujo una cantidad que supera la cantidad disponible de {item.name}"
 
             for dependencie, amount in item.dependencies.items():
-                available2 = self.resource_availabilty(dependencie, start, end)
+                available2 = self.resource_availability(dependencie, start, end)
 
                 if available2 == 0:
                     return f"No hay disponibilidad de {dependencie.name} en estas fechas,\
@@ -102,7 +102,7 @@ class planification:
 
         return False
 
-    def resource_availabilty(
+    def resource_availability(
         self, resour: resource, beginning: datetime, end: datetime
     ):
         last_seen_event = 0
@@ -120,11 +120,9 @@ class planification:
                     resour.in_use += self.events[i].needed_resources[resour]
                     last_seen_event = i
 
-        # Código para chequear si el final del evento en creacion, pertenece
+        # Código para chequear si el final del evento en creación, pertenece
         # al intervalo de un evento que empieza posteriormente
         for i in range(last_seen_event + 1, len(self.events)):
-            if i == len(self.events):  # No creo que llegue a ocurrir este caso
-                break
             if self.events[i].beginning > end:
                 break
             if self.events[i].beginning <= end <= self.events[i].end:
@@ -133,7 +131,12 @@ class planification:
         ####################################################################
 
         resour.set_available()
-        return resour.available
+        available = resour.available
+
+        resour.in_use = 0
+        resour.set_available()
+
+        return available
 
         """ Consola en mente
         if resour.available == 0:
@@ -179,15 +182,30 @@ class planification:
         """
 
     # ***************************************************************************
-    def find_space(self, event):
-        sugested_beggining = date.today()
-        sugested_end = date.today()
+    def find_space(self, needed_resources, first_search_date, event_duration):
+        suggested_beginning = first_search_date
+        final_search_date = suggested_beginning + timedelta(days=45)
 
-        # Encontrar un dia en el cual empezar el evento
-        while True:
-            pass
+        while suggested_beginning <= final_search_date:
+            suggested_end = suggested_beginning + timedelta(hours=event_duration)
+            all_resources_available = True
 
-        return (sugested_beggining, sugested_end)
+            # Encontrar el posible día de inicio
+            for item, amount in needed_resources.items():
+                availability = self.resource_availability(
+                    item, suggested_beginning, suggested_end
+                )
+                if availability < amount:
+                    all_resources_available = False
+                    break
+
+            if all_resources_available:
+                return suggested_beginning, suggested_end
+            else:
+                suggested_beginning += timedelta(hours=1)
+
+        # Si no hay hueco en los próximos 45 días:
+        return None
 
     # ***************************************************************************
 

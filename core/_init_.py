@@ -4,21 +4,34 @@ from core.resources import resource, make_inventory
 import os, json
 
 
-DataShow = resource("Datashow", 2)
+DataShow = resource("Datashows", 2)
 Pantalla_tela = resource("Pantallas tela")
-Salon = resource("Salones", 3)
-Tv = resource("Tv's", 10)
+Salon = resource("Salones", 5)
+Tv = resource("Tv's", 8)
 Laptop = resource("Laptops", 3)
-Tecnico_AV = resource("Técnicos AV", 2)
-Coffee_break = resource("Coffee break", 5)
-Dependiente_gastronomico = resource("Dependientes gastronómicos", 6)
+Microfono = resource("Micrófonos", 11)
+Tecnico_AV = resource("Técnicos AV", 4)
+Coffee_break = resource("Coffee break", 10)
+Dependiente_gastronomico = resource("Dependientes gastronómicos", 15)
 Paquete_boda = resource("Paquetes de boda", 2)
+
+# Reglas definidas para los recursos del dominio
+Coffee_break.dependant_on(Dependiente_gastronomico, amount=2)
+Pantalla_tela.dependant_on(DataShow)
+DataShow.dependant_on(Pantalla_tela)
+DataShow.dependant_on(Tecnico_AV)
+Microfono.dependant_on(Tecnico_AV)
+
+resource.establish_conflict(Tv, DataShow)
+##############################################################
 
 Inventory = make_inventory(
     DataShow,
     Pantalla_tela,
+    Salon,
     Tv,
     Laptop,
+    Microfono,
     Tecnico_AV,
     Coffee_break,
     Dependiente_gastronomico,

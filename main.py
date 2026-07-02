@@ -40,13 +40,10 @@ def home_page():
 
 
 welcome_page = st.Page(home_page, title="Inicio", icon="🏠")
-
 event_page = st.Page("UI/menus/event_creation.py", title="Crear Evento", icon="📅")
-
 inventory_page = st.Page(
     "UI/menus/see_inventory.py", title="Gestionar Inventario", icon="📦"
 )
-
 schedule_page = st.Page(
     "UI/menus/see_schedule.py", title="Eventos Planificados", icon="📋"
 )

@@ -5,15 +5,23 @@ class resource:
         total_cuantity=1,
         available=0,
         in_use=0,
-        dependencies={},
-        conflicts=[],
+        dependencies=None,
+        conflicts=None,
     ):
         self.name = name
         self.total_cuantity = total_cuantity
         self.available = available
         self.in_use = in_use
-        self.dependencies = dependencies
-        self.conflicts = conflicts
+
+        if dependencies is None:
+            self.dependencies = {}
+        else:
+            self.dependencies = dependencies
+
+        if conflicts == None:
+            self.conflicts = []
+        else:
+            self.conflicts = conflicts
 
     def increase_amount(self, amount):
         self.total_cuantity += amount
