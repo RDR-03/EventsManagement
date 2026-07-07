@@ -79,18 +79,27 @@ if st.session_state.decrease_form:
         resource_selected = inventory[selection]
         conflictive_events = []
 
+        # Para recalcular resource_availability correctamente
+        resource_selected.total_cuantity -= amount
+
         for ev in schedule.events:
+
             if resource_selected in ev.needed_resources:
-                if (
-                    resource_selected.total_cuantity - amount
-                    < ev.needed_resources[resource_selected]
-                ):
+                start = ev.beginning
+                end = ev.end
+
+                available = schedule.resource_availability(
+                    resource_selected, start, end
+                )
+
+                if available < ev.needed_resources[resource_selected]:
                     date = ev.beginning.strftime("%d/%m/%Y a las %H:%M")
                     conflictive_events.append(
                         f"**{ev.type}** (Programada para el {date})"
                     )
 
         if conflictive_events:
+            resource_selected.total_cuantity += amount
             visual_list = "\n".join(conflictive_events)
             st.session_state.conflictive_future_events = (
                 f"No dispondrá de la cantidad necesaria si descuenta del inventario "
@@ -101,9 +110,7 @@ if st.session_state.decrease_form:
             st.session_state.changed_resource = False
             st.rerun()
         else:
-            st.session_state.changed_resource = resource_selected.decrease_amount(
-                amount
-            )
+            st.session_state.changed_resource = True
 
         if st.session_state.changed_resource:
             st.session_state.message = f"Se han quitado {amount} {selection}"
