@@ -65,7 +65,7 @@ class planification:
     ):
         for event in self.events:
             # Para comprobar si los intervalos de tiempo se intersectan
-            if event.beginnig < end and beginning < event.end:
+            if event.beginning < end and beginning < event.end:
                 if resour in event.needed_resources:
                     resour.in_use += event.needed_resources[resour]
 
