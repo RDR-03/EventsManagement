@@ -88,7 +88,9 @@ if selections:
 
     # Elección personal de fechas
     start = st.datetime_input(
-        f"Fecha de inicio de la {event_type}", value=st.session_state.suggested_start
+        f"Fecha de inicio de la {event_type}",
+        value=st.session_state.suggested_start,
+        step=60,
     )
     if start < datetime.now().replace(minute=0, second=0, microsecond=0):
         st.error("El evento debe iniciar hoy o en un día posterior")
@@ -96,6 +98,7 @@ if selections:
     end = st.datetime_input(
         f"Fecha de finalización de la {event_type}",
         value=st.session_state.suggested_end,
+        step=60,
     )
     if end < start:
         st.error("El fin del evento debe ser igual o posterior a la fecha de inicio")

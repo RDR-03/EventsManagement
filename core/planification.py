@@ -38,6 +38,7 @@ class planification:
             if available < amount:
                 return f"Introdujo una cantidad que supera la cantidad disponible de {item.name}"
 
+            # Chequear disponibilidad de cada una de las dependencias
             for dependencie, amount in item.dependencies.items():
                 available2 = self.resource_availability(dependencie, start, end)
 
