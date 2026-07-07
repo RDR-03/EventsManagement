@@ -59,7 +59,7 @@ def Ask_confirmation():
 
     elif st.button("Cancelar"):
         st.session_state.confirmation = False
-        st.session_state.event_to_delete_idx = None
+        st.session_state.event_to_delete_id = None
         st.rerun()
 
 

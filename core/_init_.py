@@ -88,12 +88,11 @@ def LoadResources():
     if not os.path.exists(ResourcesPath):
         return False
 
-    Inventory = {}
-
     with open(ResourcesPath, "r") as f:
         resources_list = json.load(f)
         for data in resources_list:
-            resour = resource.from_dict(data)
-            Inventory[resour.name] = resour
+            name = data["name"]
+            if name in Inventory:
+                Inventory[name].total_cuantity = data["total_cuantity"]
 
     return Inventory

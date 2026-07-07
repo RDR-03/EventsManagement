@@ -98,8 +98,9 @@ if st.session_state.decrease_form:
                         f"**{ev.type}** (Programada para el {date})"
                     )
 
+        resource_selected.total_cuantity += amount
+
         if conflictive_events:
-            resource_selected.total_cuantity += amount
             visual_list = "\n".join(conflictive_events)
             st.session_state.conflictive_future_events = (
                 f"No dispondrá de la cantidad necesaria si descuenta del inventario "
@@ -110,7 +111,9 @@ if st.session_state.decrease_form:
             st.session_state.changed_resource = False
             st.rerun()
         else:
-            st.session_state.changed_resource = True
+            st.session_state.changed_resource = resource_selected.decrease_amount(
+                amount
+            )
 
         if st.session_state.changed_resource:
             st.session_state.message = f"Se han quitado {amount} {selection}"

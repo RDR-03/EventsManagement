@@ -51,39 +51,13 @@ class resource:
     def __str__(self):
         return f"{self.name}, Cantidad ({self.total_cuantity})"
 
-    """ Consola en mente
-    def ask_amount(self):
-        amount = int(input("Que cantidad desea asociar: "))
-
-        if amount > self.available:
-            print(
-                f"No hay {amount} {self.name} disponibles en estas fechas\n"
-                f"Solamente se dispone de {self.available} {self.name}"
-            )
-            self.ask_amount()
-
-        return amount
-    """
-
     # Estos son los metodos encargados de la persistencia de datos de la clase con Json
     def to_dict(self):
-        return {
-            "name": self.name,
-            "total_cuantity": self.total_cuantity,
-            "dependencies": self.dependencies,
-            "conflicts": self.conflicts,
-        }
+        return {"name": self.name, "total_cuantity": self.total_cuantity}
 
     @classmethod
     def from_dict(cls, data):
-        return cls(
-            data["name"],
-            data["total_cuantity"],
-            0,  # Available
-            0,  # In_use
-            data["dependencies"],
-            data["conflicts"],
-        )
+        return cls(data["name"], data["total_cuantity"], 0, 0)  # Available  # In_use
 
     ####################################################################################
 
@@ -95,12 +69,3 @@ def make_inventory(r1: resource, *ri: resource):
         inventory[r.name] = r
 
     return inventory
-
-
-""" Consola en mente
-def list_inventory(inventory):
-    index = 1
-    for item, values in inventory.items():
-        print(f"{index} - {item}: {values.total_cuantity}")
-        index += 1
-"""
