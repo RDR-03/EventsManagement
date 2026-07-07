@@ -1,8 +1,5 @@
-# Informe del Proyecto
-
 **Sistema de Planificación de Eventos y Gestión de recursos en el sector hotelero**
 
-**Autor:** Omar Alejandro Cuellar Ash
 **Lenguaje empleado:** Python 3.13.5
 **Dependencias empleadas:** Streamlit 1.53.1
 
