@@ -1,8 +1,5 @@
-# Informe del Proyecto
+### Sistema de Planificación de Eventos y Gestión de recursos en el sector hotelero
 
-**Sistema de Planificación de Eventos y Gestión de recursos en el sector hotelero**
-
-**Autor:** Omar Alejandro Cuellar Ash
 **Lenguaje empleado:** Python 3.13.5
 **Dependencias empleadas:** Streamlit 1.53.1
 
@@ -143,19 +140,10 @@ Durante la programación se identificaron varias dificultades técnicas. La mayo
 ### 6.1. Verificación de solapamiento de intervalos
 
 La primera aproximación para comprobar la disponibilidad consistía en verificar únicamente si la fecha de inicio del nuevo evento se encontraba dentro del rango del evento existente. Sin embargo, esta lógica fallaba cuando el nuevo evento contenía completamente al evento existente (inicio anterior y fin posterior). Para solucionarlo se implementó una función de intersección de intervalos.
-diante un selector de fecha y otro de hora (widgets de Streamlit), el usuario elige, por ejemplo, _2026-07-20_ y _18:00_.
 
-**Al pulsar Crear Evento, la aplicación añade el evento a la lista y lo muestra en la sección "Eventos planificados", con su identificador interno (p. ej., ID 101).**
+**Al pulsar Crear Evento, la aplicación añade el evento a la lista y lo muestra en la sección "Eventos planificados"**
 
 ---
-
-## 6. Dificultades técnicas encontradas y soluciones
-
-Durante la programación se identificaron varias dificultades técnicas. La mayoría afectaban la lógica de negocio, independientemente de la interfaz utilizada. El uso de Streamlit también tuvo algunos desafíos específicos.
-
-### 6.1. Verificación de solapamiento de intervalos
-
-La primera aproximación para comprobar la disponibilidad consistía en verificar únicamente si la fecha de inicio del nuevo evento se encontraba dentro del rango del evento existente. Sin embargo, esta lógica fallaba cuando el nuevo evento contenía completamente al evento existente (inicio anterior y fin posterior). Para solucionarlo se implementó una función de intersección de intervalos.
 
 ### 6.2. Gestión del estado en Streamlit
 
