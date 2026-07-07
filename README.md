@@ -141,19 +141,17 @@ Durante la programación se identificaron varias dificultades técnicas. La mayo
 
 La primera aproximación para comprobar la disponibilidad consistía en verificar únicamente si la fecha de inicio del nuevo evento se encontraba dentro del rango del evento existente. Sin embargo, esta lógica fallaba cuando el nuevo evento contenía completamente al evento existente (inicio anterior y fin posterior). Para solucionarlo se implementó una función de intersección de intervalos.
 
----
-
 ### 6.2. Gestión del estado en Streamlit
 
 Streamlit redibuja toda la página en cada interacción, lo que provoca que las variables no persistentes se reinicien. Inicialmente, los datos se perdían al añadir un recurso o evento. Para resolverlo se almacenaron los diccionarios de eventos y recursos en `st.session_state`. De esta forma, las modificaciones persisten entre recargas de la interfaz, garantizando la consistencia de la sesión.
 
-## 6.3. Objetos datetime en formato JSON
+### 6.3. Objetos datetime en formato JSON
 
 **Problema:** El módulo `json` no admite la serialización directa de objetos `datetime`, lanzando la excepción `TypeError: Object of type datetime is not JSON serializable`.
 
 Para la deserialización, se implementó un proceso inverso que itera sobre la estructura de datos cargada y convierte las cadenas ISO en objetos `datetime` mediante `datetime.fromisoformat()` antes de reconstruir las instancias de la clase `Evento`.
 
-## 6.4. Mantenimiento de la integridad cuando se le daba baja a recursos en el inventario
+### 6.4. Mantenimiento de la integridad cuando se le daba baja a recursos en el inventario
 
 La reducción de las cantidades de un recurso que se encontraba asignado a uno o varios eventos dejaba referencias a recursos inexistentes en las listas de asignación de los eventos, corrompiendo la integridad de la agenda. Para solucionarlo se implementó un mecanismo de verificación previa a la eliminación:
 
@@ -163,7 +161,7 @@ La reducción de las cantidades de un recurso que se encontraba asignado a uno o
 
 De esta forma se garantiza que la agenda se mantenga consistente y libre de referencias inválidas.
 
-## 6.5. Adaptación de la interfaz a las validaciones de fechas
+### 6.5. Adaptación de la interfaz a las validaciones de fechas
 
 Como Streamlit proporciona widgets para la selección de fechas y horas (objetos `datetime`), propició mayor comodidad para:
 
