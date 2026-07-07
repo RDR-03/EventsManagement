@@ -141,8 +141,6 @@ Durante la programación se identificaron varias dificultades técnicas. La mayo
 
 La primera aproximación para comprobar la disponibilidad consistía en verificar únicamente si la fecha de inicio del nuevo evento se encontraba dentro del rango del evento existente. Sin embargo, esta lógica fallaba cuando el nuevo evento contenía completamente al evento existente (inicio anterior y fin posterior). Para solucionarlo se implementó una función de intersección de intervalos.
 
-**Al pulsar Crear Evento, la aplicación añade el evento a la lista y lo muestra en la sección "Eventos planificados"**
-
 ---
 
 ### 6.2. Gestión del estado en Streamlit
